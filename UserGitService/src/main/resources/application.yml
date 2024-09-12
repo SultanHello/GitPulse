@@ -1,4 +1,17 @@
 spring:
+  jpa:
+    open-in-view:
+      true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  datasource:
+    url: jdbc:mysql://Localhost:3306/UserGitPulseData
+    username: root
+    password: Zxcvbnm2006?
   application:
     name: UserGitService
 server:

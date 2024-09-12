@@ -1,4 +1,26 @@
 spring:
+  cloud:
+    gateway:
+      routes:
+        - id: ReleaseGitService
+          uri: lb://RELEASEGITSERVICE
+          predicates:
+            - Path=/releases/**
+          filters:
+            - AuthenticationFilter
+
+        - id: EmailSenderGitService
+          uri: lb://EMAILSENDERGITSERVICE
+          predicates:
+            - Path=/email/**
+
+
+        - id: UserGitService
+          uri: lb://USERGITSERVICE
+          predicates:
+            - Path=/users/**
+  #          filters:
+  #            - AuthenticationFilter
   application:
     name: GatewayGitService
 server:
