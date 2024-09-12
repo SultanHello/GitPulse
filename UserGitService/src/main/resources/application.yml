@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: UserGitService
+server:
+  port: 9235
+eureka:
+  client:
+    service-url:
+      defaultZone : http://localhost:9283/eureka/

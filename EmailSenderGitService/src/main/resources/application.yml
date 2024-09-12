@@ -1,9 +1,8 @@
 spring:
   application:
-    name: GatewayGitService
+    name: EmailSenderGitService
 server:
-  port: 5743
-
+  port: 9834
 eureka:
   client:
     service-url:

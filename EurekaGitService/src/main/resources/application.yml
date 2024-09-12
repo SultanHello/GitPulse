@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: EurekaGitService
+server:
+  port: 9283
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
