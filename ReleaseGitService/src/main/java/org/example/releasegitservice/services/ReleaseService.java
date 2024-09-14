@@ -41,7 +41,7 @@ public class ReleaseService {
                 String.class
         );
         System.out.println(4);
-        String accessToken = "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";
+        String accessToken = "";
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
 
