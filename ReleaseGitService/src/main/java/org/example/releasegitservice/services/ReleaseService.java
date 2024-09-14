@@ -41,7 +41,7 @@ public class ReleaseService {
                 String.class
         );
         System.out.println(4);
-        String accessToken = System.getenv("GITHUB_ACCESS_TOKEN");
+        String accessToken = "";
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
 
