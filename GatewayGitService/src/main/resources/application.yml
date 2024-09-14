@@ -6,14 +6,20 @@ spring:
           uri: lb://RELEASEGITSERVICE
           predicates:
             - Path=/releases/**
-          filters:
-            - AuthenticationFilter
+#          filters:
+#            - AuthenticationFilter
 
         - id: EmailSenderGitService
           uri: lb://EMAILSENDERGITSERVICE
           predicates:
             - Path=/email/**
 
+        - id: ApplicationGitService
+          uri: lb://APPLICATIONGITSERVICE
+          predicates:
+            - Path=/app/**
+          filters:
+            - AuthenticationFilter
 
         - id: UserGitService
           uri: lb://USERGITSERVICE

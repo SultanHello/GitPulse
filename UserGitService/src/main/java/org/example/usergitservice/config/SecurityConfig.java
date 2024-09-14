@@ -25,7 +25,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth->auth.requestMatchers("auth/login","/users/register","/auth/isValidate","/auth/getUsername","/auth/token").permitAll()
+                .authorizeHttpRequests(auth->auth.requestMatchers("auth/login","/users/register","/users/getUser","/users/login","/auth/token").permitAll()
                         .anyRequest().authenticated())
                 .userDetailsService(myUserDetailsService)
                 .sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

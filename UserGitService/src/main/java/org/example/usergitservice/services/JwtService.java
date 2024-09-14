@@ -24,6 +24,9 @@ public class JwtService {
                 .signWith(getSignKey())
                 .compact();
     }
+    public String extractUsername(String token) {
+        return extractAllClaims(token).getSubject();
+    }
     private SecretKey getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
@@ -38,10 +41,11 @@ public class JwtService {
     }
 
     public Claims extractAllClaims(String token) {
+        System.out.println("Extracting claims from token: " + token);
         return  Jwts.parserBuilder()
-                .setSigningKey(getSignKey())  // Установка секретного ключа для подписи
+                .setSigningKey(getSignKey())
                 .build()
-                .parseClaimsJws(token)  // Разбор токена и проверка подписи
+                .parseClaimsJws(token.trim())
                 .getBody();
     }
     public boolean isValid(String token, UserDetails user){
