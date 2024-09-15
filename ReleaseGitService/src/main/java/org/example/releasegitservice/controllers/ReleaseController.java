@@ -3,6 +3,7 @@ package org.example.releasegitservice.controllers;
 
 import lombok.AllArgsConstructor;
 import org.example.releasegitservice.models.Release;
+import org.example.releasegitservice.models.Starter;
 import org.example.releasegitservice.services.ReleaseService;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,9 +24,9 @@ public class ReleaseController {
 //        return "success";
 //    }
     @PostMapping("/addRepo")
-    public String addReleases(@RequestParam String repoName,@RequestHeader(value = "Authorization") String authHeader){
+    public String addReleases(@RequestBody Starter starter, @RequestHeader(value = "Authorization") String authHeader){
         System.out.println(3);
-        releaseService.addReleases(repoName,authHeader.trim());
+        releaseService.addReleases(starter,authHeader.trim());
         return "success";
     }
 

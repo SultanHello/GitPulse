@@ -21,6 +21,7 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(@RequestBody LogUser logUser){
+        System.out.println(1);
         return userService.login(logUser);
     }
 

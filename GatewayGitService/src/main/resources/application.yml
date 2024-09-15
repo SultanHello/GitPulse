@@ -9,10 +9,10 @@ spring:
 #          filters:
 #            - AuthenticationFilter
 
-        - id: EmailSenderGitService
-          uri: lb://EMAILSENDERGITSERVICE
+        - id: NotificationSenderGitService
+          uri: lb://NOTIFICATIONSENDERGITSERVICE
           predicates:
-            - Path=/email/**
+            - Path=/notification/**
 
         - id: ApplicationGitService
           uri: lb://APPLICATIONGITSERVICE

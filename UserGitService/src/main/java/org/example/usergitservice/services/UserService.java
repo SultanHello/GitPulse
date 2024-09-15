@@ -45,6 +45,7 @@ public class UserService {
 
     }
     public String login(LogUser logUser){
+        System.out.println(2);
         manager.authenticate(new UsernamePasswordAuthenticationToken(logUser.getEmail(),logUser.getPassword()));
         User user = userRepository.findByEmail(logUser.getEmail());
         return jwtService.generateToken(user);

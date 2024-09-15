@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: NotificationSenderGitService
+
+
+
+server:
+  port: 9834
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9283/eureka/
