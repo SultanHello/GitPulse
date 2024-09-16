@@ -25,7 +25,7 @@ import java.util.List;
 public class ReleaseService {
     private final ReleaseRepository repository;
     private final RestTemplate restTemplate;
-    private final SlackConnection emailConnection;
+    private final SlackConnection slackConnection;
 
     public List<Release> allReleases(){
         return repository.findAll();
@@ -81,7 +81,7 @@ public class ReleaseService {
         }
         if(repository.findAll().get(repository.findAll().size()-1).getReleaseDate().isAfter(LocalDateTime.now().minusSeconds(10))){
             System.out.println(repository.findAll().get(repository.findAll().size()-1).toString());
-            emailConnection.sendMessage(repository.findAll().get(repository.findAll().size()-1).toString(),starter);
+            slackConnection.sendMessage(repository.findAll().get(repository.findAll().size()-1).toString(),starter);
         }
 
 
