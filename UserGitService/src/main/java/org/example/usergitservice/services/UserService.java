@@ -50,4 +50,8 @@ public class UserService {
         User user = userRepository.findByEmail(logUser.getEmail());
         return jwtService.generateToken(user);
     }
+    public String getEmail(String token){
+        return userRepository.findByEmail(jwtService.extractUsername(token)).getEmail();
+
+    }
 }

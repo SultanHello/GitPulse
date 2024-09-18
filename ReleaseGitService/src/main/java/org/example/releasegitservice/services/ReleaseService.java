@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,7 +38,7 @@ public class ReleaseService {
         System.out.println(authHeader);
 
         String gitUsername=restTemplate.getForObject(
-                "http://USERGITSERVICE/users/getUser?token="+authHeader.substring(7),
+                "http://USERGITSERVICE/users/getGitUsername?token="+authHeader.substring(7),
                 String.class
         );
         System.out.println(4);
@@ -86,6 +87,52 @@ public class ReleaseService {
 
 
 
+
+
+
+    }
+
+    public List<String> getReposNames(String authHeader){
+        System.out.println(1);
+        String gitUsername = restTemplate.getForObject(
+                "http://USERGITSERVICE/users/getGitUsername?token="+authHeader.substring(7),
+                String.class
+        );
+        List<String> reposNames = new ArrayList<>();
+        List<Release> releases = repository.findAll();
+        System.out.println(releases);
+        for(int i = 0;i<releases.size();i++){
+            if(releases.get(i).getGitUsername().equals(gitUsername)){
+                System.out.println(releases.get(i).getRepositoryName());
+
+                if (!reposNames.contains(releases.get(i).getRepositoryName())){
+                    reposNames.add(releases.get(i).getRepositoryName());
+                }
+
+            }
+
+        }
+        return reposNames;
+    }
+    public List<Release> getReposReleases(String authHeader ,String reposName){
+        String gitUsername = restTemplate.getForObject(
+                "http://USERGITSERVICE/users/getGitUsername?token="+authHeader.substring(7),
+                String.class
+        );
+        List<Release> reposReleases =new ArrayList<>();
+        List<Release> releases = repository.findAll();
+
+        for (Release release:releases){
+
+            if(release.getGitUsername().equals(gitUsername)){
+                System.out.println(release.getRepositoryName()+" : "+reposName);
+                if(release.getRepositoryName().equals(reposName)){
+                    reposReleases.add(release);
+                }
+
+            }
+        }
+        return reposReleases;
 
 
 

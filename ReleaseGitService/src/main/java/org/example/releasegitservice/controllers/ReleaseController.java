@@ -29,6 +29,15 @@ public class ReleaseController {
         releaseService.addReleases(starter,authHeader.trim());
         return "success";
     }
+    @GetMapping("/getRepos")
+    public List<String> getReposNames(@RequestHeader(value = "Authorization") String authHeader){
+        return releaseService.getReposNames(authHeader);
+
+    }
+    @GetMapping("/getReposReleases/{reposName}")
+    public List<Release> getReposReleases(@RequestHeader(value = "Authorization") String authHeader,@PathVariable String reposName){
+        return releaseService.getReposReleases(authHeader,reposName);
+    }
 
 
 //    @GetMapping("/check")

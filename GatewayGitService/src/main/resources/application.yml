@@ -21,6 +21,7 @@ spring:
           filters:
             - AuthenticationFilter
 
+
         - id: UserGitService
           uri: lb://USERGITSERVICE
           predicates:

@@ -30,10 +30,17 @@ public class UserController {
         return userService.register(regUser);
     }
 
-    @GetMapping("/getUser")
+    @GetMapping("/getGitUsername")
     public String getUser(@RequestParam String token){
+        System.out.println(2);
         return userService.getGitUsernameByEmail(token);
     }
+
+    @GetMapping("/getEmail")
+    public String getEmail(@RequestParam String token){
+        return userService.getEmail(token);
+    }
+
 
 
 }
