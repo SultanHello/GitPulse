@@ -3,6 +3,7 @@ package org.example.releasegitservice.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
+import org.example.releasegitservice.connectionService.EmailConnection;
 import org.example.releasegitservice.connectionService.SlackConnection;
 import org.example.releasegitservice.models.Release;
 import org.example.releasegitservice.models.Starter;
@@ -27,6 +28,7 @@ public class ReleaseService {
     private final ReleaseRepository repository;
     private final RestTemplate restTemplate;
     private final SlackConnection slackConnection;
+    private final EmailConnection emailConnection;
 
     public List<Release> allReleases(){
         return repository.findAll();
@@ -42,7 +44,7 @@ public class ReleaseService {
                 String.class
         );
         System.out.println(4);
-        String accessToken = "";
+        String accessToken = "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";
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
 
@@ -82,7 +84,9 @@ public class ReleaseService {
         }
         if(repository.findAll().get(repository.findAll().size()-1).getReleaseDate().isAfter(LocalDateTime.now().minusSeconds(10))){
             System.out.println(repository.findAll().get(repository.findAll().size()-1).toString());
-            slackConnection.sendMessage(repository.findAll().get(repository.findAll().size()-1).toString(),starter);
+            slackConnection.sendMessage(repository.findAll().get(repository.findAll().size()-1),starter);
+            emailConnection.sendMessage(repository.findAll().get(repository.findAll().size()-1),starter,authHeader);
+
         }
 
 
@@ -133,10 +137,8 @@ public class ReleaseService {
             }
         }
         return reposReleases;
-
-
-
     }
+
 
 
 

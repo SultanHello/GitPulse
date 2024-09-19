@@ -1,6 +1,24 @@
 spring:
   application:
     name: NotificationSenderGitService
+  mail:
+    host: smtp.mail.ru  # SMTP сервер
+    port: 465              # Порт SMTP сервера
+    username: asimbek06@mail.ru
+    password: DnL00SdEdm3kZYKLptzr            # Пароль для SMTP
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          starttls:
+            enable: false
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 
 
 

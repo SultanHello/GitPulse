@@ -6,5 +6,6 @@ import lombok.Data;
 public class Starter {
     private String webhoockUrl;
     private String repoName;
+    private String token;
 }
 

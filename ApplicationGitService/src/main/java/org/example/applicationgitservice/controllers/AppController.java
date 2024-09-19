@@ -17,9 +17,9 @@ public class AppController {
         System.out.println(1);
         return appService.start(starter,authHeader);
     }
+
     @GetMapping("/hello")
     public String hello(){
         return "hello";
     }
-
 }

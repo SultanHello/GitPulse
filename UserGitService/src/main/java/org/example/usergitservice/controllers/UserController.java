@@ -37,10 +37,11 @@ public class UserController {
     }
 
     @GetMapping("/getEmail")
-    public String getEmail(@RequestParam String token){
+    public String getEmail(@RequestHeader("Authorization") String authorizationHeader) {
+        // Извлечь токен из заголовка
+        String token = authorizationHeader.replace("Bearer ", "");
         return userService.getEmail(token);
     }
-
 
 
 }
