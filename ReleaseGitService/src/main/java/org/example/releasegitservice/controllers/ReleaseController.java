@@ -1,6 +1,7 @@
 package org.example.releasegitservice.controllers;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import org.example.releasegitservice.models.Release;
 import org.example.releasegitservice.models.Starter;
@@ -18,13 +19,9 @@ public class ReleaseController {
     public String hello(){
         return "hello";
     }
-//    @PostMapping("/addAllRepo")
-//    public String addAllReleases(@RequestParam String repoName,@RequestHeader(value = "Authorization") String authHeader){
-//        releaseService.addAllReleases(repoName,authHeader.trim());
-//        return "success";
-//    }
+
     @PostMapping("/addRepo")
-    public String addReleases(@RequestBody Starter starter, @RequestHeader(value = "Authorization") String authHeader){
+    public String addReleases(@RequestBody Starter starter, @RequestHeader(value = "Authorization") String authHeader) throws JsonProcessingException {
         System.out.println(3);
         releaseService.addReleases(starter,authHeader.trim());
         return "success";
@@ -39,11 +36,6 @@ public class ReleaseController {
         return releaseService.getReposReleases(authHeader,reposName);
     }
 
-
-//    @GetMapping("/check")
-//    public String check(){
-//        releaseService.
-//    }
     @GetMapping
     public List<Release> releases(){
         return releaseService.allReleases();

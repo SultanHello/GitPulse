@@ -20,6 +20,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -30,6 +31,8 @@ public class ReleaseService {
     private final SlackConnection slackConnection;
     private final EmailConnection emailConnection;
 
+
+
     public List<Release> allReleases(){
         return repository.findAll();
     }
@@ -38,33 +41,63 @@ public class ReleaseService {
 
     public void addReleases(Starter starter, String authHeader){
         System.out.println(authHeader);
+        String gitUsername =getGitUsername(authHeader);
+        JsonNode[] releases = getReleasesFromGitHub(gitUsername,starter);
 
-        String gitUsername=restTemplate.getForObject(
+        List<Release> test = repository.findAll();
+        if (releases.length == 0) {
+            System.out.println("no repo releases");
+            return;
+        }
+
+        if(!test.isEmpty()){
+            if(test.get(test.size()-1).getId()==releases[0].get("id").asLong()){
+                System.out.println("You haven't new releases");
+                return;
+            }
+
+        }
+        saveReleases(releases,gitUsername,starter);
+        notifyIfNewReleases(starter,authHeader);
+
+    }
+
+    public String getGitUsername(String authHeader){
+        return restTemplate.getForObject(
                 "http://USERGITSERVICE/users/getGitUsername?token="+authHeader.substring(7),
                 String.class
         );
-        System.out.println(4);
-        String accessToken = "";
+
+    }
+    public JsonNode[] getReleasesFromGitHub(String gitUsername,Starter starter){
+        String accessToken = "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";
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
-
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         String githubApiUrl = "https://api.github.com/repos/"+gitUsername+"/"+starter.getRepoName()+"/"+"/releases";
-
         RestTemplate restTemplate = new RestTemplate();
         System.out.println(5);
         ResponseEntity<JsonNode[]> response = restTemplate.exchange(githubApiUrl, HttpMethod.GET,
                 entity, JsonNode[].class);
 
         System.out.println(6);
-        JsonNode[] releases=response.getBody();
-        List<Release> test = repository.findAll();
-        if(test.size()==releases.length){
-            System.out.println("error");
-            return;
-        }
+        JsonNode[] releases = response.getBody();
 
+        if (releases != null) {
+            Arrays.sort(releases, (a, b) -> {
+                LocalDateTime dateA = OffsetDateTime.parse(a.get("published_at").asText(), DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                        .atZoneSameInstant(ZoneOffset.ofHours(5)).toLocalDateTime();
+                LocalDateTime dateB = OffsetDateTime.parse(b.get("published_at").asText(), DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                        .atZoneSameInstant(ZoneOffset.ofHours(5)).toLocalDateTime();
+                return dateB.compareTo(dateA); // сортировка от новых к старым
+            });
+        }
+        return releases;
+
+    }
+
+    private void saveReleases(JsonNode[] releases ,String gitUsername,Starter starter){
         if (releases != null) {
             for (JsonNode release : releases) {
                 repository.save(Release.builder()
@@ -82,17 +115,14 @@ public class ReleaseService {
 
             }
         }
+
+    }
+    private void notifyIfNewReleases(Starter starter,String authHeader){
         if(repository.findAll().get(repository.findAll().size()-1).getReleaseDate().isAfter(LocalDateTime.now().minusSeconds(10))){
             System.out.println(repository.findAll().get(repository.findAll().size()-1).toString());
             slackConnection.sendMessage(repository.findAll().get(repository.findAll().size()-1),starter);
             emailConnection.sendMessage(repository.findAll().get(repository.findAll().size()-1),starter,authHeader);
-
         }
-
-
-
-
-
 
     }
 
