@@ -70,7 +70,7 @@ public class ReleaseService {
 
     }
     public JsonNode[] getReleasesFromGitHub(String gitUsername,Starter starter){
-        String accessToken = "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";
+        String accessToken = "";
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
         HttpEntity<String> entity = new HttpEntity<>(headers);
