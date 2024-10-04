@@ -21,8 +21,7 @@ public class ReleaseController {
     }
 
     @PostMapping("/addRepo")
-    public String addReleases(@RequestBody Starter starter, @RequestHeader(value = "Authorization") String authHeader) throws JsonProcessingException {
-        System.out.println(3);
+    public String addReleases(@RequestBody Starter starter, @RequestHeader(value = "Authorization") String authHeader){
         releaseService.addReleases(starter,authHeader.trim());
         return "success";
     }

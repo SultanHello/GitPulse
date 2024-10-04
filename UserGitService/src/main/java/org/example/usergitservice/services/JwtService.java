@@ -5,6 +5,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.example.usergitservice.models.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
+    private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
     private final String SECRET_KEY ="4b4d109b8a545947e3d06e7856aad9a97f546e19330280128170df02bbe3e211";
     public String generateToken(User user) {
         return Jwts.builder()
@@ -41,7 +44,7 @@ public class JwtService {
     }
 
     public Claims extractAllClaims(String token) {
-        System.out.println("Extracting claims from token: " + token);
+        logger.info("Extracting claims from token: {}",token);
         return  Jwts.parserBuilder()
                 .setSigningKey(getSignKey())
                 .build()
@@ -53,11 +56,6 @@ public class JwtService {
         return idNumber.equals(user.getUsername())&& !isValidExtract(token);
     }
 
-    public void validateToken(String token) {
-        Jwts.parserBuilder()
-                .setSigningKey(getSignKey())
-                .build().parseClaimsJws(token);
-    }
 
 
 

@@ -6,6 +6,8 @@ import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.example.usergitservice.models.LogUser;
 import org.example.usergitservice.models.RegUser;
 import org.example.usergitservice.services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 @AllArgsConstructor
 public class UserController {
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
     @GetMapping("/hello")
     public String hello(){
@@ -21,25 +24,26 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(@RequestBody LogUser logUser){
-        System.out.println(1);
+        logger.info("starting login with data {}",logUser);
         return userService.login(logUser);
     }
 
     @PostMapping("/register")
     public String register(@RequestBody RegUser regUser){
+        logger.info("starting register with data {}",regUser);
         return userService.register(regUser);
     }
 
     @GetMapping("/getGitUsername")
     public String getUser(@RequestParam String token){
-        System.out.println(2);
+        logger.info("starting getting user by token : {}",token);
         return userService.getGitUsernameByEmail(token);
     }
 
     @GetMapping("/getEmail")
     public String getEmail(@RequestHeader("Authorization") String authorizationHeader) {
-        // Извлечь токен из заголовка
         String token = authorizationHeader.replace("Bearer ", "");
+        logger.info("starting getting email by token : {}",token);
         return userService.getEmail(token);
     }
 

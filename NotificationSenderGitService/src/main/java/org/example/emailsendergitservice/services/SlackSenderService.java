@@ -1,5 +1,6 @@
 package org.example.emailsendergitservice.services;
 
+import lombok.AllArgsConstructor;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -11,43 +12,60 @@ import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.example.emailsendergitservice.controllers.EmailSenderController;
 import org.example.emailsendergitservice.model.Starter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+
 public class SlackSenderService {
 
+    private static final Logger logger = LoggerFactory.getLogger(SlackSenderService.class);
 
-    public void sendNotification(String message, Starter starter){
-        String WEBHOOK_URL = starter.getWebhoockUrl();
-        System.out.println(WEBHOOK_URL);
-        try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpPost post = new HttpPost(WEBHOOK_URL);
-            post.setHeader("Content-Type", "application/json");
-            String json = "{\"text\":\"" + message + "\"}";
-            post.setEntity(new StringEntity(json, ContentType.APPLICATION_JSON));
-            HttpResponse response = client.execute(post);
-            if (response == null) {
-                System.out.println("No response received.");
+
+    public void sendNotification(String message, Starter starter) {
+        String webhookUrl = starter.getWebhoockUrl();
+
+        logger.info("formatting JSON  with message : {}",message);
+        String json = "{\"text\":\"" + message + "\"}";
+
+
+        logger.info("creating headers");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        org.springframework.http.HttpEntity<String> entity = new org.springframework.http.HttpEntity<>(json, headers);
+        RestTemplate restTemplate=new RestTemplate();
+
+        try {
+            logger.info("starting send post response where url {}",webhookUrl);
+
+            ResponseEntity<String> response = restTemplate.postForEntity(webhookUrl, entity, String.class);
+            logger.info("checking status of response : {}",response.getBody());
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                logger.info("Notification sent successfully ,sent message : {} ",message);
+                logger.info("Response : {}",response.getBody());
+            } else {
+                logger.error("Failed to send notification. Status: {}",response.getStatusCode());
+                logger.error("Response : {}",response.getBody());
 
             }
-
-            int statusCode = response.getCode();
-            HttpEntity entity = ((CloseableHttpResponse) response).getEntity();
-            String responseBody = EntityUtils.toString(entity);
-
-            System.out.println("Status: " + statusCode);
-            System.out.println("Response: " + responseBody);
-
-
-
-
         } catch (Exception e) {
-            System.out.println("An error occurred while sending the notification.");
-            e.printStackTrace();
+            logger.error("An error occurred while sending the notification: {}",e.getMessage());
+            throw new RuntimeException("An error occurred while sending the notification");
+
         }
     }
 }

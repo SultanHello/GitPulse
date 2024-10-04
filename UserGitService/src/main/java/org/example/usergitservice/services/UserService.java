@@ -1,11 +1,14 @@
 package org.example.usergitservice.services;
 
 import lombok.AllArgsConstructor;
+import org.example.usergitservice.controllers.UserController;
 import org.example.usergitservice.filter.JwtAuthenticationFilter;
 import org.example.usergitservice.models.LogUser;
 import org.example.usergitservice.models.RegUser;
 import org.example.usergitservice.models.User;
 import org.example.usergitservice.repositories.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class UserService {
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     @Autowired
     private final UserRepository userRepository;
 
@@ -26,32 +30,77 @@ public class UserService {
 
     private final AuthenticationManager manager;
     public String getGitUsernameByEmail(String token){
-        return userRepository.findByEmail(jwtService.extractUsername(token)).getGitUsername();
-
+        try {
+            logger.info("starting work with JwtService");
+            String emailFromJwt =jwtService.extractUsername(token);
+            logger.info("starting finding User by email : {}",emailFromJwt);
+            User user =userRepository.findByEmail(emailFromJwt);
+            if (user == null) {
+                logger.error("no user found with email: {}", emailFromJwt);
+                throw new RuntimeException("user not found for email: " + emailFromJwt);
+            }
+            return user.getGitUsername();
+        }catch (Exception e){
+            logger.error("error while connection with other classes",e);
+            throw new RuntimeException("error while connection with other classes");
+        }
     }
     public String register(RegUser regUser){
+        try {
+            logger.info("starting check to is {} this Identity user",regUser.getEmail());
+            if(userRepository.existsByEmail(regUser.getEmail())){
+                logger.error("user with this name {} already exist",regUser.getEmail());
+                throw new RuntimeException("user with this name already exist");
+            }
+            logger.info("starting save authenticated user : {}",regUser);
+            User user =userRepository.save(
+                    User.builder()
+                            .email(regUser.getEmail())
+                            .password(encoder.encode(regUser.getPassword()))
+                            .gitUsername(regUser.getGitUsername())
+                            .build()
+            );
+            logger.info("saved data {} for future use",user);
+            logger.info("starting generate token by user {} ,then return it",user);
+            return jwtService.generateToken(user);
+        }catch (Exception e){
+            logger.error("error while saving data {}",regUser,e);
+            throw new RuntimeException("error while saving data");
 
-
-
-        User userToken =userRepository.save(
-                User.builder()
-                        .email(regUser.getEmail())
-                        .password(encoder.encode(regUser.getPassword()))
-                        .gitUsername(regUser.getGitUsername())
-                        .build()
-        );
-        return jwtService.generateToken(userToken);
-
+        }
 
     }
     public String login(LogUser logUser){
-        System.out.println(2);
-        manager.authenticate(new UsernamePasswordAuthenticationToken(logUser.getEmail(),logUser.getPassword()));
-        User user = userRepository.findByEmail(logUser.getEmail());
-        return jwtService.generateToken(user);
+        if(!userRepository.existsByEmail(logUser.getEmail())){
+            logger.error("not exist user with this email : {}",logUser.getEmail());
+            throw new RuntimeException("not exist user with this email");
+        }
+        try {
+            logger.info("starting authenticate");
+            manager.authenticate(new UsernamePasswordAuthenticationToken(logUser.getEmail(),logUser.getPassword()));
+            logger.info("starting get user by email : {}",logUser.getEmail());
+            User user = userRepository.findByEmail(logUser.getEmail());
+            logger.info("starting generate token by user {} for return",user);
+            return jwtService.generateToken(user);
+
+        }catch (Exception e){
+            logger.error("error while authenticate user : {}",logUser,e);
+            throw new RuntimeException("error while authenticate ");
+        }
+
     }
     public String getEmail(String token){
-        return userRepository.findByEmail(jwtService.extractUsername(token)).getEmail();
+        logger.info("starting get and check email");
+        String emailFromJwt = jwtService.extractUsername(token);
+        if(emailFromJwt==null){
+            throw new RuntimeException("email extracted from JWT is null");
+        }
+        logger.info("starting get and check user");
+        User user = userRepository.findByEmail(emailFromJwt);
+        if (user == null) {
+            throw new RuntimeException("user not found with email: " + emailFromJwt);
+        }
 
+        return user.getEmail();
     }
 }
