@@ -167,22 +167,16 @@ public class ReleaseService {
         }
     }
     public void notifyIfNewReleases(Starter starter,String authHeader){
-
-        logger.info("checking if the last release was created within the last 10 seconds for notification");
         List<Release> releases = repository.findAll();
         Release lastRelease = releases.get(releases.size() - 1);
-        try {
-            if(lastRelease.getReleaseDate().isAfter(LocalDateTime.now().minusSeconds(10))){
-                logger.info("sending release notification whose : {}",lastRelease);
-                logger.info("sending release {} to slack connection class",lastRelease);
-                slackConnection.sendMessage(lastRelease,starter);
-                logger.info("sending releases {} to email connection class",lastRelease);
-                emailConnection.sendMessage(lastRelease,starter,authHeader);
-                logger.info("success sent");
-            }else{
-                logger.warn("error with last release already obsolete");
-            }
 
+        try {
+            logger.info("sending release notification whose : {}",lastRelease);
+            logger.info("sending release {} to slack connection class",lastRelease);
+            emailConnection.sendMessage(lastRelease,starter,authHeader);
+            logger.info("success sent");
+            slackConnection.sendMessage(lastRelease,starter);
+            logger.info("sending releases {} to email connection class",lastRelease);
         }catch (Exception e){
             logger.error("error while sending notification for release: {}",lastRelease,e);
             throw  new RuntimeException("problem with sending notification",e);
