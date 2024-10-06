@@ -96,14 +96,17 @@ public class ReleaseService {
             if (gitUsername == null) {
                 logger.error("Git username is null");
                 throw new RuntimeException("Git username cannot be null");
+            }else{
+                logger.info("result restTemplete for get git username : {}",gitUsername);
+                return gitUsername;
+
             }
-            logger.info("result restTemplete for get git username : {}",gitUsername);
-            return gitUsername;
+
 
 
         }catch (Exception e){
             logger.error("error with :{}",url,e);
-            throw  new RuntimeException("error while connect with  userGitService");
+            throw  new RuntimeException("error while connect with userGitService");
 
         }
 
@@ -138,7 +141,7 @@ public class ReleaseService {
 
     }
 
-    public void saveReleases(JsonNode[] releases ,String gitUsername,Starter starter){
+    public String saveReleases(JsonNode[] releases ,String gitUsername,Starter starter){
         try {
             logger.info("starting saving all releases from repo : {}",starter.getRepoName());
             for (JsonNode release : releases) {
@@ -155,7 +158,9 @@ public class ReleaseService {
                         .releaseUrl(release.get("html_url").asText())
                         .build());
             }
+
             logger.info("releases saved to dataBase");
+            return "releases saved to dataBase";
         }catch (Exception e){
             logger.error("error while saving releases ",e);
             throw new RuntimeException("error while saving releases ");
@@ -252,4 +257,6 @@ public class ReleaseService {
             throw new RuntimeException("error with find gitUsername releases");
         }
     }
+
+
 }

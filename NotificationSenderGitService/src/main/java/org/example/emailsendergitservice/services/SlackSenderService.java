@@ -34,7 +34,7 @@ public class SlackSenderService {
     private static final Logger logger = LoggerFactory.getLogger(SlackSenderService.class);
 
 
-    public void sendNotification(String message, Starter starter) {
+    public String sendNotification(String message, Starter starter) {
         String webhookUrl = starter.getWebhoockUrl();
 
         logger.info("formatting JSON  with message : {}",message);
@@ -57,9 +57,12 @@ public class SlackSenderService {
             if (response.getStatusCode() == HttpStatus.OK) {
                 logger.info("Notification sent successfully ,sent message : {} ",message);
                 logger.info("Response : {}",response.getBody());
+                return "success send slack";
+
             } else {
                 logger.error("Failed to send notification. Status: {}",response.getStatusCode());
                 logger.error("Response : {}",response.getBody());
+                return "error send slack";
 
             }
         } catch (Exception e) {

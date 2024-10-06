@@ -1,5 +1,7 @@
 package org.example.releasegitservice.integratedTest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -14,22 +16,27 @@ import org.example.releasegitservice.models.Starter;
 import org.example.releasegitservice.repositories.ReleaseRepository;
 import org.example.releasegitservice.services.GitHubService;
 import org.example.releasegitservice.services.ReleaseService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
@@ -39,11 +46,13 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
+@AutoConfigureMockMvc
 
 public class TestServiceIntegrated {
     @Autowired
     private ReleaseService releaseService;
     private static final Logger logger = LoggerFactory.getLogger(TestServiceIntegrated.class);
+
 
 
     @Autowired
@@ -54,23 +63,21 @@ public class TestServiceIntegrated {
 
     @MockBean
     private EmailConnection emailConnection;
-    @MockBean
-    private RestTemplate restTemplate;
-    @MockBean
-    private GitHubService gitHubService;
+
+
+
 
     @Test
     public void testNotifyIfNewReleases() {
+
         Starter starter = new Starter();
         String authHeader = "Bearer token";
-
-
 
 
         logger.info("adding new release to db");
         Release newRelease = Release.builder()
                 .id(1L)
-                .releaseDate(LocalDateTime.now().minusSeconds(5)) // релиз создан недавно
+                .releaseDate(LocalDateTime.now().minusSeconds(5))
                 .build();
         releaseRepository.save(newRelease);
 
@@ -110,6 +117,7 @@ public class TestServiceIntegrated {
         verify(slackConnection, never()).sendMessage(any(), any());
         verify(emailConnection, never()).sendMessage(any(), any(), any());
     }
+
 
 
 
