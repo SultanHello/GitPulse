@@ -60,14 +60,20 @@ public class ReleaseService {
             logger.info("gitUsername getted : {}",gitUsername);
             JsonNode[] releases = getReleasesFromGitHub(gitUsername,starter,starter.getGitHubUrl());
             logger.info("releases getted : {}",Arrays.toString(releases));
-
-            List<Release> test = repository.findAll();
+            List<Release> test=new ArrayList<>();
+            for(int i = 0;i<repository.findAll().size();i++){
+                if(repository.findAll().get(i).getRepositoryName().equals(starter.getRepoName())){
+                    test.add(repository.findAll().get(i));
+                }
+            }
 
             if (releases.length == 0) {
                 logger.info("no repo releases for repo : {}",starter.getRepoName());
                 System.out.println("no repo releases");
                 return;
             }
+
+
 
             if(!test.isEmpty()){
                 if(test.get(test.size()-1).getId()==releases[0].get("id").asLong()){
