@@ -52,14 +52,36 @@
 **1.Отправка уведомлении по Email**
 
 ```bash
-     POST http://localhost:9834/notification/email
+     POST http://localhost:9834/notification/sendEmail?message=<<Релиз>>
+```
+
+Тело запроса
+
+```json
+   {
+       "webhookUrl": "ваш URL для уведомлений в Slack",
+       "repoName": "название вашего репозитория",
+       "token": "URL GitHub для безопасного использования API"
+   }
+    
 ```
 С помощю JavaMailSender мы отправляем уведомление о новых релизах
 
 **2.Отправка уведомлении по Slack**
 
 ```bash
-     POST http://localhost:9834/notification/sendSlack
+     POST http://localhost:9834/notification/sendSlack?message=<<Релиз>>
+```
+
+Тело запроса
+
+```json
+   {
+       "webhookUrl": "ваш URL для уведомлений в Slack",
+       "repoName": "название вашего репозитория",
+       "token": "URL GitHub для безопасного использования API"
+   }
+    
 ```
 C использванием webhookUrl мы отправляем уведомление о новых релизах
 
