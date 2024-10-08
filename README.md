@@ -46,7 +46,7 @@
     - **Spring Security** — для обеспечения безопасности и защиты приложения.
     - 
 **Как работает отправка уведомлении**
-В NotificationGitService есть RestApi где
+В NotificationGitService есть RestApi
 1.Отправка уведомлении по Email
 ```bash
      POST http://localhost:9834/notification/email
