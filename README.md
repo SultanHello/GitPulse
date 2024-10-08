@@ -44,18 +44,19 @@
   - **Конфигурации** находятся в пакете `config`. Здесь содержатся файлы с настройками для подключения к базам данных и внешним API:
     - **RestTemplate** — для настройки HTTP-запросов к внешним сервисам, таким как GitHub API.
     - **Spring Security** — для обеспечения безопасности и защиты приложения.
+    - 
 **Как работает отправка уведомлении**
 В NotificationGitService есть RestApi где
 1.Отправка уведомлении по Email
 ```bash
      POST http://localhost:9834/notification/email
-     ```
+```
 С помощю JavaMailSender мы отправляем уведомление о новых релизах
 
 2.Отправка уведомлении по Slack
 ```bash
      POST http://localhost:9834/notification/sendSlack
-     ```
+```
 C использванием webhookUrl мы отправляем уведомление о новых релизах
 
 
