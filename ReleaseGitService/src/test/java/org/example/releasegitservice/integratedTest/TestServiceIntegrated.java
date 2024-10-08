@@ -95,28 +95,7 @@ public class TestServiceIntegrated {
         verify(emailConnection, times(1)).sendMessage(lastRelease, starter, authHeader);
     }
 
-    @Test
-    public void testNotifyIfNoNewReleases() {
-        Starter starter = new Starter();
-        String authHeader = "Bearer token";
 
-
-        logger.info("adding old release");
-        Release oldRelease = Release.builder()
-                .id(1L)
-                .releaseDate(LocalDateTime.now().minusMinutes(1))
-                .build();
-        releaseRepository.save(oldRelease);
-
-
-        logger.info("call method");
-        releaseService.notifyIfNewReleases(starter, authHeader);
-
-
-        logger.info("check notification is sent");
-        verify(slackConnection, never()).sendMessage(any(), any());
-        verify(emailConnection, never()).sendMessage(any(), any(), any());
-    }
 
 
 

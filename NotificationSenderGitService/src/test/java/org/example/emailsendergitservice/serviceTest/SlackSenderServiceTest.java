@@ -28,7 +28,7 @@ public class SlackSenderServiceTest {
 
         String message = "only test";
         Starter starter = new Starter();
-        starter.setWebhoockUrl("https://hooks.slack.com/services/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"); // замените на ваш реальный webhook
+        starter.setWebhoockUrl("https://hooks.slack.com/services/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"); // замените на ваш реальный webhook
 
         String sender = slackSenderService.sendNotification(message, starter);
 

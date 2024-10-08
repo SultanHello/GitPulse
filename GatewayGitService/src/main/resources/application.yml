@@ -6,8 +6,8 @@ spring:
           uri: lb://RELEASEGITSERVICE
           predicates:
             - Path=/releases/**
-#          filters:
-#            - AuthenticationFilter
+          filters:
+            - AuthenticationFilter
 
         - id: NotificationSenderGitService
           uri: lb://NOTIFICATIONSENDERGITSERVICE
