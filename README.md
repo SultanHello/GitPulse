@@ -99,10 +99,10 @@
         
           Вот пример для взаймодействие с Пользвательским БД
           
-            **GET   http://localhost:9235/users/getGitUsername?token=<<Ваш токен>>**
+  **GET   http://localhost:9235/users/getGitUsername?token=<<Ваш токен>>**
              -Вернет ваше имя пользвателя гитхаб 
              
-            **GET   http://localhost:9235/users/getEmail**    :    вам нужно в **Bearer token** написать token                 который вы получили после регистрации или логина
+  **GET   http://localhost:9235/users/getEmail**    :    вам нужно в **Bearer token** написать token                 который вы получили после регистрации или логина
              -Вернет ваше email address    
              
           Вот пример для взаймодействие с БД релизов
