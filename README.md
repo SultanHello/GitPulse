@@ -74,11 +74,11 @@
         
   **POST  http://localhost:9235/users/register**
   
-                  {
-                    "email": <<Ваш email>>,
-                    "password":<<Ваш пароль>>,
-                    "gitUsername":<<Ваше имя пользвателя для гит хаба>>
-                  }
+            {
+                "email": <<Ваш email>>,
+                "password":<<Ваш пароль>>,
+                "gitUsername":<<Ваше имя пользвателя для гит хаба>>
+            }
             
   **POST  http://localhost:9235/users/login**
   
