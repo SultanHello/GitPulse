@@ -46,14 +46,18 @@
     - **Spring Security** — для обеспечения безопасности и защиты приложения.
     - 
 **Как работает отправка уведомлении**
-В NotificationGitService есть RestApi
-1.Отправка уведомлении по Email
+
+**В NotificationGitService есть RestApi там используем**
+
+**1.Отправка уведомлении по Email**
+
 ```bash
      POST http://localhost:9834/notification/email
 ```
 С помощю JavaMailSender мы отправляем уведомление о новых релизах
 
-2.Отправка уведомлении по Slack
+**2.Отправка уведомлении по Slack**
+
 ```bash
      POST http://localhost:9834/notification/sendSlack
 ```
