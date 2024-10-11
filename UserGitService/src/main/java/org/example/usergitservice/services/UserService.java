@@ -48,7 +48,7 @@ public class UserService {
     public String register(RegUser regUser){
         try {
             logger.info("starting check to is {} this Identity user",regUser.getEmail());
-            if(userRepository.existsByEmail(regUser.getEmail())&&userRepository.existsByGitUsername(regUser.getGitUsername())){
+            if(userRepository.existsByEmail(regUser.getEmail())||userRepository.existsByGitUsername(regUser.getGitUsername())){
                 logger.error("user with this email or git username already exist");
                 throw new RuntimeException("user with this email or git username already exist");
             }
