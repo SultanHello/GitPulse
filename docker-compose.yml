@@ -1,0 +1,115 @@
+services:
+  gateway-service:
+    environment:
+      eureka.client.serviceUrl.defaultZone: http://host.docker.internal:9283/eureka/
+    build:
+      context: ./GatewayGitService
+      dockerfile: Dockerfile
+    ports:
+      - "5743:8085"
+    depends_on:
+      - eureka-service
+
+
+  postgres-release:
+    image: 'postgres:latest'
+    environment:
+      - 'POSTGRES_DB=releases'
+      - 'POSTGRES_PASSWORD=postgres'
+      - 'POSTGRES_USER=postgres'
+    ports:
+      - '5432:5432'
+    depends_on:
+      - eureka-service
+
+
+  release-service:
+    build:
+      context: ./ReleaseGitService
+      dockerfile: Dockerfile
+    ports:
+      - "8432:8080"
+    environment:
+      eureka.client.serviceUrl.defaultZone: http://host.docker.internal:9283/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-release:5432/releases
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - postgres-release
+      - eureka-service
+
+
+
+  postgres-user:
+    image: 'postgres:latest'
+    environment:
+      - 'POSTGRES_DB=users'
+      - 'POSTGRES_PASSWORD=postgres'
+      - 'POSTGRES_USER=postgres'
+    ports:
+      - '5433:5433'
+    depends_on:
+      - eureka-service
+
+
+
+
+
+
+  user-service:
+    build:
+      context: ./UserGitService
+      dockerfile: Dockerfile
+    ports:
+      - "9235:8081"
+    environment:
+      eureka.client.serviceUrl.defaultZone: http://host.docker.internal:9283/eureka/
+      SPRING_DATASOURCE_URL1: jdbc:postgresql://postgres-user:5432/users
+      SPRING_DATASOURCE_USERNAME1: postgres
+      SPRING_DATASOURCE_PASSWORD1: postgres
+    depends_on:
+      - postgres-user
+      - eureka-service
+
+
+
+
+
+  notification-service:
+    environment:
+      eureka.client.serviceUrl.defaultZone: http://host.docker.internal:9283/eureka/
+    build:
+      context: ./NotificationSenderGitService
+      dockerfile: Dockerfile
+    ports:
+      - "9834:8082"
+    depends_on:
+      - eureka-service
+
+
+  application-service:
+    environment:
+      eureka.client.serviceUrl.defaultZone: http://host.docker.internal:9283/eureka/
+    build:
+      context: ./ApplicationGitService
+      dockerfile: Dockerfile
+    ports:
+      - "2452:8084"
+    depends_on:
+      - eureka-service
+
+  eureka-service:
+    build:
+      context: ./EurekaGitService
+      dockerfile: Dockerfile
+    ports:
+      - "9283:9283"
+    environment:
+      eureka.client.register-with-eureka: false  # Это сервер, он не регистрируется сам в себе
+      eureka.client.fetch-registry: false
+
+networks:
+  crud-network:
+
+
+

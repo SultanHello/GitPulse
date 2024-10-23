@@ -26,6 +26,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.LoggerFactory;
@@ -61,6 +62,7 @@ public class ReleaseService {
             JsonNode[] releases = getReleasesFromGitHub(gitUsername,starter,starter.getGitHubUrl());
             logger.info("releases getted : {}",Arrays.toString(releases));
             List<Release> test=new ArrayList<>();
+            logger.info("SOSOSOSOSOSOS dv {}",repository.findAll().size());
             for(int i = 0;i<repository.findAll().size();i++){
                 if(repository.findAll().get(i).getRepositoryName().equals(starter.getRepoName())){
                     test.add(repository.findAll().get(i));
@@ -76,17 +78,26 @@ public class ReleaseService {
 
 
             if(!test.isEmpty()){
-                if(test.get(test.size()-1).getId()==releases[0].get("id").asLong()){
+                logger.info("last {} new {}",test.get(0).getId(),releases[0].get("id").asLong());
+                if(test.get(test.size()-1).getId()==releases[releases.length-1].get("id").asLong()){
                     logger.info("You haven't new releases because of repo {} with no new releases",starter.getRepoName());
                     return;
                 }
+                logger.info("saving new releases for repo : {}",starter.getRepoName());
+
+                saveReleases(releases,gitUsername,starter);
+
+                logger.info("send new notification for repo : {}",starter.getRepoName());
+                notifyIfNewReleases(starter,authHeader);
+            }else{
+                logger.info("saving new releases for repo : {}",starter.getRepoName());
+                saveReleases(releases,gitUsername,starter);
             }
 
-            logger.info("saving new releases for repo : {}",starter.getRepoName());
 
-            saveReleases(releases,gitUsername,starter);
-            logger.info("send new notification for repo : {}",starter.getRepoName());
-            notifyIfNewReleases(starter,authHeader);
+
+
+
 
         }catch (Exception e) {
             logger.error("Error occurred in addReleases for repo: {} with authHeader: {}", starter.getRepoName(), authHeader, e);
@@ -142,6 +153,9 @@ public class ReleaseService {
             logger.error("error while sorting releases : {}",Arrays.toString(releases),e);
             throw new RuntimeException("error with sorting");
         }
+        List<JsonNode> releaseList = Arrays.asList(releases);
+        Collections.reverse(releaseList);
+        releases = releaseList.toArray(new JsonNode[0]);
         return releases;
 
 

@@ -1,22 +1,23 @@
 spring:
   jpa:
-    open-in-view:
-      true
     hibernate:
       ddl-auto: update
     show-sql: true
     properties:
       hibernate:
-        format_sql: true
+        dialect:  org.hibernate.dialect.PostgreSQLDialect # Добавь эту строку
   datasource:
-    url: jdbc:mysql://Localhost:3306/UserGitPulseData
-    username: root
-    password: Zxcvbnm2006?
+    url: ${SPRING_DATASOURCE_URL1}
+    username: ${SPRING_DATASOURCE_USERNAME1}
+    password: ${SPRING_DATASOURCE_PASSWORD1}
+    driver-class-name: org.postgresql.Driver
   application:
     name: UserGitService
-server:
-  port: 9235
+
 eureka:
   client:
     service-url:
       defaultZone : http://localhost:9283/eureka/
+
+server:
+  port: 8081

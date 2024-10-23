@@ -31,7 +31,7 @@ spring:
   application:
     name: GatewayGitService
 server:
-  port: 5743
+  port: 8085
 
 eureka:
   client:

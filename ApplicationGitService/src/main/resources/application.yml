@@ -2,7 +2,7 @@ spring:
   application:
     name: ApplicationGitService
 server:
-  port: 2452
+  port: 8084
 eureka:
   client:
     service-url:
