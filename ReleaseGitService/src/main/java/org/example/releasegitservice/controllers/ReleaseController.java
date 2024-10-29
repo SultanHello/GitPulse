@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import org.example.releasegitservice.models.Release;
 import org.example.releasegitservice.models.Starter;
 import org.example.releasegitservice.services.ReleaseService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,9 +17,12 @@ import java.util.List;
 @AllArgsConstructor
 public class ReleaseController {
     private  final ReleaseService releaseService;
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
     @GetMapping("/hello")
-    public String hello(){
-        return "hello";
+    public void sendMessage(@RequestParam String message) {
+
+        System.out.println("Сообщение отправлено: " + message);
     }
 
     @PostMapping("/addRepo")

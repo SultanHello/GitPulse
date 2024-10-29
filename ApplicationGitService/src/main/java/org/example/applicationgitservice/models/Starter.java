@@ -8,4 +8,5 @@ public class Starter {
     private String webhoockUrl;
     private String repoName;
     private String gitHubUrl;
+
 }

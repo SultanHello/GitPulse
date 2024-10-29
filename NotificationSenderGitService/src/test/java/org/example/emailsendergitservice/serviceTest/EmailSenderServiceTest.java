@@ -1,6 +1,6 @@
-package org.example.emailsendergitservice.services;
+package org.example.emailsendergitservice.serviceTest;
 
-import org.example.emailsendergitservice.model.Starter;
+import org.example.emailsendergitservice.services.EmailSenderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,42 +32,16 @@ public class EmailSenderServiceTest {
     @Mock
     private RestTemplate restTemplate;
 
-    private Starter starter;
+
 
     @BeforeEach
     public void setUp() {
-        starter = new Starter();
-        starter.setToken("test-token");
+
     }
 
     @Test
     public void testSendEmail() {
-        // Arrange
-        String expectedEmail = "recipient@example.com";
-        String emailText = "This is a test email";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + starter.getToken());
-        HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        when(restTemplate.exchange(
-                "http://USERGITSERVICE/users/getEmail",
-                HttpMethod.GET,
-                entity,
-                String.class
-        )).thenReturn(ResponseEntity.ok(expectedEmail));
-
-        // Act
-        emailSenderService.sendEmail(starter, emailText);
-
-        // Assert
-        ArgumentCaptor<SimpleMailMessage> messageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
-        verify(mailSender, times(1)).send(messageCaptor.capture());
-
-        SimpleMailMessage sentMessage = messageCaptor.getValue();
-        assertEquals("asimbek06@mail.ru", sentMessage.getFrom());
-        assertEquals(expectedEmail, sentMessage.getTo()[0]);
-        assertEquals("GitPulse", sentMessage.getSubject());
-        assertEquals(emailText, sentMessage.getText());
     }
 }

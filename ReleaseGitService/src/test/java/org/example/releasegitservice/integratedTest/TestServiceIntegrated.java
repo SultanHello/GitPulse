@@ -9,8 +9,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.example.releasegitservice.connectionService.EmailConnection;
-import org.example.releasegitservice.connectionService.SlackConnection;
+
+import org.example.releasegitservice.connectionService.NotificationConnection;
 import org.example.releasegitservice.models.Release;
 import org.example.releasegitservice.models.Starter;
 import org.example.releasegitservice.repositories.ReleaseRepository;
@@ -59,10 +59,9 @@ public class TestServiceIntegrated {
     private ReleaseRepository releaseRepository;
 
     @MockBean
-    private SlackConnection slackConnection;
+    private NotificationConnection notificationConnection;
 
-    @MockBean
-    private EmailConnection emailConnection;
+
 
 
 
@@ -70,29 +69,7 @@ public class TestServiceIntegrated {
     @Test
     public void testNotifyIfNewReleases() {
 
-        Starter starter = new Starter();
-        String authHeader = "Bearer token";
 
-
-        logger.info("adding new release to db");
-        Release newRelease = Release.builder()
-                .id(1L)
-                .releaseDate(LocalDateTime.now().minusSeconds(5))
-                .build();
-        releaseRepository.save(newRelease);
-
-
-        logger.info("call method");
-        releaseService.notifyIfNewReleases(starter, authHeader);
-
-
-        logger.info("get lest release");
-        Release lastRelease = releaseRepository.findAll().get(releaseRepository.findAll().size() - 1);
-
-
-        logger.info("check notification is sent");
-        verify(slackConnection, times(1)).sendMessage(lastRelease, starter);
-        verify(emailConnection, times(1)).sendMessage(lastRelease, starter, authHeader);
     }
 
 

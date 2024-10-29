@@ -5,8 +5,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.example.releasegitservice.connectionService.EmailConnection;
-import org.example.releasegitservice.connectionService.SlackConnection;
+
+import org.example.releasegitservice.connectionService.NotificationConnection;
+
 import org.example.releasegitservice.models.Release;
 import org.example.releasegitservice.models.Starter;
 import org.example.releasegitservice.repositories.ReleaseRepository;
@@ -41,8 +42,7 @@ public class ReleaseService {
 
     private final ReleaseRepository repository;
     private final RestTemplate restTemplate;
-    private final SlackConnection slackConnection;
-    private final EmailConnection emailConnection;
+    private final NotificationConnection notificationConnection;
 
 
 
@@ -192,11 +192,10 @@ public class ReleaseService {
 
         try {
             logger.info("sending release notification whose : {}",lastRelease);
-            logger.info("sending release {} to slack connection class",lastRelease);
-            emailConnection.sendMessage(lastRelease,starter,authHeader);
+            logger.info("sending release {} to connection class",lastRelease);
+            notificationConnection.sendMessage(lastRelease,starter,authHeader);
             logger.info("success sent");
-            slackConnection.sendMessage(lastRelease,starter);
-            logger.info("sending releases {} to email connection class",lastRelease);
+
         }catch (Exception e){
             logger.error("error while sending notification for release: {}",lastRelease,e);
             throw  new RuntimeException("problem with sending notification",e);

@@ -1,4 +1,11 @@
 spring:
+  kafka:
+    bootstrap-servers: localhost:9092  # Адрес Kafka-брокера
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      retries: 3
+      acks: all
   application:
     name: ReleaseGitService
   datasource:
