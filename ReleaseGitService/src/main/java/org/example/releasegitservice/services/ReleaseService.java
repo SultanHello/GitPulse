@@ -11,7 +11,7 @@ import org.example.releasegitservice.connectionService.NotificationConnection;
 import org.example.releasegitservice.models.Release;
 import org.example.releasegitservice.models.Starter;
 import org.example.releasegitservice.repositories.ReleaseRepository;
-import org.hibernate.annotations.ValueGenerationType;
+
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -60,6 +60,7 @@ public class ReleaseService {
 
             logger.info("gitUsername getted : {}",gitUsername);
             JsonNode[] releases = getReleasesFromGitHub(gitUsername,starter,starter.getGitHubUrl());
+
             logger.info("releases getted : {}",Arrays.toString(releases));
             List<Release> test=new ArrayList<>();
             logger.info("SOSOSOSOSOSOS dv {}",repository.findAll().size());

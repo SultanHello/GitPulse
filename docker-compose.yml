@@ -10,15 +10,14 @@ services:
     depends_on:
       - eureka-service
 
-
-  postgres-release:
-    image: 'postgres:latest'
+  mongo-db:
+    image: 'mongo:latest'
     environment:
-      - 'POSTGRES_DB=releases'
-      - 'POSTGRES_PASSWORD=postgres'
-      - 'POSTGRES_USER=postgres'
+      - MONGO_INITDB_ROOT_USERNAME=postgres
+      - MONGO_INITDB_ROOT_PASSWORD=postgres
+      - MONGO_INITDB_DATABASE=releases
     ports:
-      - '5432:5432'
+      - '27017:27017'
     depends_on:
       - eureka-service
 
@@ -31,12 +30,12 @@ services:
       - "8432:8080"
     environment:
       eureka.client.serviceUrl.defaultZone: http://host.docker.internal:9283/eureka/
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-release:5432/releases
+      SPRING_DATASOURCE_URL: mongodb://mongo-db:27017/releases
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     depends_on:
-      - postgres-release
+      - mongo-db
       - eureka-service
 
 
@@ -74,11 +73,6 @@ services:
       - zookeeper
 
 
-
-
-
-
-
   user-service:
     build:
       context: ./UserGitService
@@ -93,9 +87,6 @@ services:
     depends_on:
       - postgres-user
       - eureka-service
-
-
-
 
 
   notification-service:

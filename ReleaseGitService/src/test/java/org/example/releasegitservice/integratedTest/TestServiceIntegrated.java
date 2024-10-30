@@ -6,8 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
+
 import lombok.AllArgsConstructor;
 
 import org.example.releasegitservice.connectionService.NotificationConnection;
@@ -45,7 +44,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Transactional
+
 @AutoConfigureMockMvc
 
 public class TestServiceIntegrated {

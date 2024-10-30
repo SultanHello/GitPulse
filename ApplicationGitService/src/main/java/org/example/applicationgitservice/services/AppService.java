@@ -19,9 +19,7 @@ import java.util.List;
 public class AppService {
     private final RestTemplate restTemplate;
     private static final Logger logger = LoggerFactory.getLogger(AppService.class);
-
     public void start(Starter starter, String authHeader){
-
         logger.info("starting work with http header");
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", authHeader);
