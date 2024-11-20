@@ -38,18 +38,58 @@ services:
       - mongo-db
       - eureka-service
 
-
+  postgres-group:
+    image: 'postgres:latest'
+    environment:
+      - 'POSTGRES_DB=group-db'
+      - 'POSTGRES_PASSWORD=postgres'
+      - 'POSTGRES_USER=postgres'
+    ports:
+      - '5434:5432'
+    depends_on:
+      - eureka-service
 
   postgres-user:
     image: 'postgres:latest'
     environment:
-      - 'POSTGRES_DB=users'
+      - 'POSTGRES_DB=user-db'
       - 'POSTGRES_PASSWORD=postgres'
       - 'POSTGRES_USER=postgres'
     ports:
-      - '5433:5433'
+      - '5435:5431'
     depends_on:
       - eureka-service
+
+  group-service:
+    build:
+      context: ./GroupGitService
+      dockerfile: Dockerfile
+    ports:
+      - "9234:8079"
+    environment:
+      eureka.client.serviceUrl.defaultZone: http://host.docker.internal:9283/eureka/
+      SPRING_DATASOURCE_URL1: jdbc:postgresql://postgres-group:5432/group-db
+      SPRING_DATASOURCE_USERNAME1: postgres
+      SPRING_DATASOURCE_PASSWORD1: postgres
+    depends_on:
+      - postgres-group
+      - eureka-service
+
+  user-service:
+    build:
+      context: ./UserGitService
+      dockerfile: Dockerfile
+    ports:
+      - "9235:8081"
+    environment:
+      eureka.client.serviceUrl.defaultZone: http://host.docker.internal:9283/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-user:5432/user-db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - postgres-user
+      - eureka-service
+
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -73,20 +113,6 @@ services:
       - zookeeper
 
 
-  user-service:
-    build:
-      context: ./UserGitService
-      dockerfile: Dockerfile
-    ports:
-      - "9235:8081"
-    environment:
-      eureka.client.serviceUrl.defaultZone: http://host.docker.internal:9283/eureka/
-      SPRING_DATASOURCE_URL1: jdbc:postgresql://postgres-user:5432/users
-      SPRING_DATASOURCE_USERNAME1: postgres
-      SPRING_DATASOURCE_PASSWORD1: postgres
-    depends_on:
-      - postgres-user
-      - eureka-service
 
 
   notification-service:

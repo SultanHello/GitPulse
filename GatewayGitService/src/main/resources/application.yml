@@ -23,6 +23,12 @@ spring:
             - Path=/app/**
           filters:
             - AuthenticationFilter
+        - id: GroupGitService
+          uri: lb://GROUPGITSERVICE
+          predicates:
+            - Path=/app/**
+          filters:
+            - AuthenticationFilter
 
 
         - id: UserGitService

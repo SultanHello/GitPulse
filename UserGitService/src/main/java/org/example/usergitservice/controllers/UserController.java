@@ -3,6 +3,8 @@ package org.example.usergitservice.controllers;
 
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.example.usergitservice.models.CretingGroup;
+import org.example.usergitservice.models.Group;
 import org.example.usergitservice.models.LogUser;
 import org.example.usergitservice.models.RegUser;
 import org.example.usergitservice.services.UserService;
@@ -10,6 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import javax.swing.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -34,6 +39,24 @@ public class UserController {
         return userService.register(regUser);
     }
 
+    @GetMapping("/groups")
+    public List<Group> getGroups(){
+        return userService.getGroups();
+    }
+    @PostMapping("/enterGroup")
+    public String enterGroup(@RequestHeader("Authorization") String authorizationHeader,@RequestBody Long groupId){
+        String token = authorizationHeader.replace("Bearer ", "");
+        return userService.enterGroup(token,groupId);
+    }
+
+    @PostMapping("/createGroup")
+    public String enterGroup(@RequestHeader("Authorization") String authorizationHeader,@RequestBody String groupName){
+        String token = authorizationHeader.replace("Bearer ", "");
+        return userService.createGroup(token,groupName);
+    }
+
+
+
     @GetMapping("/getGitUsername")
     public String getUser(@RequestParam String token){
         logger.info("starting getting user by token : {}",token);
@@ -46,6 +69,7 @@ public class UserController {
         logger.info("starting getting email by token : {}",token);
         return userService.getEmail(token);
     }
+
 
 
 }

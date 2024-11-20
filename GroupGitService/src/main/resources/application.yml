@@ -8,14 +8,14 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        dialect:  org.hibernate.dialect.PostgreSQLDialect # Добавь эту строку
+        dialect:  org.hibernate.dialect.PostgreSQLDialect
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL1}
+    username: ${SPRING_DATASOURCE_USERNAME1}
+    password: ${SPRING_DATASOURCE_PASSWORD1}
     driver-class-name: org.postgresql.Driver
   application:
-    name: UserGitService
+    name: GroupGitService
 
 eureka:
   client:
@@ -23,4 +23,4 @@ eureka:
       defaultZone : http://localhost:9283/eureka/
 
 server:
-  port: 8081
+  port: 8079

@@ -1,26 +1,39 @@
 package org.example.usergitservice.services;
 
+import jakarta.ws.rs.HttpMethod;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.example.usergitservice.controllers.UserController;
 import org.example.usergitservice.filter.JwtAuthenticationFilter;
-import org.example.usergitservice.models.LogUser;
-import org.example.usergitservice.models.RegUser;
-import org.example.usergitservice.models.User;
+import org.example.usergitservice.models.*;
 import org.example.usergitservice.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+
+import static jakarta.ws.rs.HttpMethod.GET;
 
 @Service
 @AllArgsConstructor
+
 public class UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     @Autowired
     private final UserRepository userRepository;
+
+    private final RestTemplate restTemplate;
 
     @Autowired
     private final JwtService jwtService;
@@ -104,4 +117,68 @@ public class UserService {
 
         return user.getEmail();
     }
+    public List<Group> getGroups(){
+        return restTemplate.exchange(
+                "http://GROUPGITSERVICE/groups",
+
+                org.springframework.http.HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Group>>() {}
+        ).getBody();
+    }
+    public String enterGroup(String token,Long id){
+        String username =jwtService.extractId(token);
+        User user = userRepository.findByEmail(username);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        EnteringGroup enteringGroup=EnteringGroup.builder()
+                .id(id)
+                .user(user)
+                .build();
+
+
+        HttpEntity<EnteringGroup> entity = new HttpEntity<>(enteringGroup, headers);
+        logger.info("nooooooooooooooooooo");
+
+
+        return restTemplate.exchange(
+                "http://GROUPGITSERVICE/groups/addDeveloper",
+                org.springframework.http.HttpMethod.POST,
+                entity,
+                String.class
+            ).getBody();
+
+
+
+
+
+
+    }
+    public String createGroup(String token,String groupName){
+        String username =jwtService.extractId(token);
+        User user = userRepository.findByEmail(username);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        CretingGroup cretingGroup=CretingGroup.builder()
+                .groupName(groupName)
+                .user(user)
+                .build();
+
+
+        HttpEntity<CretingGroup> entity = new HttpEntity<>(cretingGroup, headers);
+        logger.info(user.getEmail()+" pemvepornbvpeornbeprobnerb");
+        return restTemplate.exchange(
+                "http://GROUPGITSERVICE/groups/createGroup",
+                org.springframework.http.HttpMethod.POST,
+                entity,
+                String.class
+        ).getBody();
+
+
+
+
+
+    }
+
 }
