@@ -3,6 +3,7 @@ package org.example.releasegitservice.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.ws.rs.HttpMethod;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +17,6 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -119,6 +119,7 @@ public class ReleaseService {
                 return gitUsername;
 
             }
+
 
 
 
