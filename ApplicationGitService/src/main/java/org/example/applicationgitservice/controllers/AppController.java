@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/app")
 @AllArgsConstructor
 public class AppController {
+
     private static final Logger logger = LoggerFactory.getLogger(AppController.class);
     @Autowired
     private final AppService appService;
